@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aela Carina — SW5e character sheet</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --hull:#171e26; --hull-2:#131920;
+  --panel:#1e2831; --panel-2:#25313c; --sunk:#141b22;
+  --rule:#33414d; --rule-soft:#2a3540;
+  --ink:#dfe6ec; --ink-2:#a9b8c4; --ink-3:#71838f;
+  --bronze:#c08a4a; --bronze-dim:#7e5c33;
+  --accent:#52c7d4; --accent-soft:rgba(82,199,212,.13);
+  --hurt:#c5563f; --mend:#6dab88;
+  --disp:"Arial Narrow","Helvetica Neue Condensed","Roboto Condensed","Liberation Sans Narrow","DejaVu Sans Condensed",Arial,sans-serif;
+  --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r:3px;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--hull); color:var(--ink); font-family:var(--body);
+  font-size:15px; line-height:1.5; font-variant-numeric:tabular-nums;
+  background-image:linear-gradient(180deg,#1a222b 0,var(--hull) 420px);
+  background-repeat:no-repeat;
+}
+h1,h2,h3{font-family:var(--disp); font-weight:700; margin:0; letter-spacing:.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.wrap{max-width:1160px;margin:0 auto;padding:28px 20px 120px}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;
+  border-left:5px solid var(--accent);padding:4px 0 0 20px;margin-bottom:22px}
+.portrait{width:118px;height:118px;border-radius:2px;object-fit:cover;
+  border:1px solid var(--rule);box-shadow:0 0 0 4px var(--hull),0 0 0 5px var(--accent-soft)}
+.portrait.ph{display:grid;place-items:center;background:var(--panel);
+  font-family:var(--disp);font-size:44px;color:var(--accent);letter-spacing:.04em}
+h1{font-size:clamp(38px,7vw,60px);line-height:.92;letter-spacing:-.015em;margin:-6px 0 8px}
+.billing{font-size:17px;color:var(--ink-2);font-family:var(--disp);letter-spacing:.02em}
+.billing b{color:var(--ink);font-weight:700}
+.billing i{color:var(--accent);font-style:normal}
+.subbilling{font-size:13.5px;color:var(--ink-3);margin-top:5px}
+.subbilling span+span::before{content:"·";margin:0 .5em;color:var(--rule)}
+
+/* ---------- generic panel ---------- */
+.panel{background:var(--panel);border:1px solid var(--rule-soft);border-radius:var(--r);
+  margin-bottom:16px}
+.panel>h2{display:flex;align-items:center;gap:10px;font-size:16px;
+  padding:11px 14px;border-bottom:1px solid var(--rule-soft);cursor:pointer;user-select:none}
+.panel>h2::before{content:"";width:7px;height:7px;background:var(--accent);flex:none;
+  transition:transform .18s ease}
+.panel>h2 .count{margin-left:auto;font-family:var(--body);font-size:12px;color:var(--ink-3);
+  font-weight:400}
+.panel[data-open="0"]>h2::before{transform:rotate(45deg)}
+.panel[data-open="0"]>.body{display:none}
+.body{padding:14px}
+
+/* ---------- vitals strip ---------- */
+.vitals{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+  gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft);
+  border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.vital{background:var(--panel);padding:11px 13px 12px}
+.vital .k{font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+.vital .v{font-family:var(--disp);font-size:32px;line-height:1.05;margin-top:1px}
+.vital .n{font-size:11px;color:var(--ink-3);margin-top:2px}
+.vital input.edit{width:100%;background:none;border:0;border-bottom:1px dotted var(--bronze-dim);
+  font-family:var(--disp);font-size:32px;padding:0;line-height:1.05}
+.vital input.edit:hover{border-bottom-color:var(--bronze)}
+
+/* ---------- hp ---------- */
+.hp{background:var(--panel);border:1px solid var(--rule-soft);border-radius:var(--r);
+  padding:14px;margin-bottom:16px;display:grid;gap:12px;
+  grid-template-columns:minmax(210px,300px) 1fr}
+.hp .read{display:flex;align-items:baseline;gap:8px;font-family:var(--disp)}
+.hp .cur{font-size:52px;line-height:.9}
+.hp .max{font-size:22px;color:var(--ink-3)}
+.hp .max input{width:3.4ch;background:none;border:0;border-bottom:1px dotted var(--bronze-dim);
+  font:inherit;color:var(--ink-2);text-align:center}
+.hp .tmp{font-size:18px;color:var(--mend);margin-left:6px}
+.track{height:12px;background:var(--sunk);border:1px solid var(--rule);border-radius:2px;
+  overflow:hidden;display:flex;margin-top:8px}
+.track i{display:block;height:100%;background:var(--accent);width:0;transition:width .5s ease}
+.track i.t{background:var(--mend);opacity:.7}
+.hpctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hpctl input[type=number]{width:68px;background:var(--sunk);border:1px solid var(--rule);
+  border-radius:2px;padding:7px 8px;text-align:center}
+.btn{background:var(--panel-2);border:1px solid var(--rule);border-radius:2px;
+  padding:7px 13px;cursor:pointer;font-size:13.5px;transition:background .12s,border-color .12s}
+.btn:hover{background:#2e3b47;border-color:var(--ink-3)}
+.btn.hurt:hover{border-color:var(--hurt);color:#f0a494}
+.btn.mend:hover{border-color:var(--mend);color:#a6d8bd}
+.btn.sm{padding:4px 9px;font-size:12.5px}
+.hpctl .sep{width:1px;height:26px;background:var(--rule-soft)}
+
+/* ---------- two-column body ---------- */
+.cols{display:grid;grid-template-columns:252px 1fr;gap:16px;align-items:start}
+@media(max-width:820px){.cols{grid-template-columns:1fr}.hp{grid-template-columns:1fr}}
+
+/* ---------- abilities ---------- */
+.abil{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule-soft)}
+.ab{background:var(--panel);display:grid;grid-template-columns:56px 1fr auto;
+  align-items:center;gap:10px;padding:9px 12px}
+.ab .score{font-family:var(--disp);font-size:30px;text-align:center;line-height:1;
+  border-right:1px solid var(--rule-soft);padding-right:8px}
+.ab .nm{font-size:13px;color:var(--ink-2)}
+.ab .nm em{display:block;font-style:normal;font-size:11px;color:var(--ink-3)}
+.ab .m{font-family:var(--disp);font-size:22px;min-width:44px}
+.saverow{display:flex;align-items:center;gap:8px;padding:6px 12px 9px;background:var(--panel);
+  font-size:12.5px;color:var(--ink-3);border-top:1px dashed var(--rule-soft);margin-top:-1px}
+.saverow .lbl{flex:1}
+
+/* proficiency pip */
+.pip{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink-3);
+  background:none;padding:0;cursor:pointer;flex:none;transition:all .12s}
+.pip[data-p="Proficient"]{background:var(--accent);border-color:var(--accent)}
+.pip[data-p="Expertise"]{background:var(--bronze);border-color:var(--bronze);
+  box-shadow:inset 0 0 0 2px var(--panel)}
+.pip:hover{border-color:var(--ink)}
+
+/* roll chip */
+.roll{font-family:var(--disp);font-size:16px;background:none;border:1px solid transparent;
+  border-radius:2px;padding:1px 7px;cursor:pointer;min-width:44px;text-align:right}
+.roll:hover{border-color:var(--accent);background:var(--accent-soft)}
+
+/* ---------- skills ---------- */
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:2px 20px}
+.skgroup{break-inside:avoid}
+.skgroup h3{font-size:12.5px;color:var(--bronze);font-family:var(--body);font-weight:600;
+  letter-spacing:.03em;padding:10px 0 5px;border-bottom:1px solid var(--rule-soft);margin-bottom:3px}
+.sk{display:flex;align-items:center;gap:9px;padding:3px 0}
+.sk .lbl{flex:1;font-size:13.5px;color:var(--ink-2)}
+.sk .bonus{font-size:10.5px;color:var(--bronze)}
+
+/* ---------- resources ---------- */
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px}
+.res .block .t{font-size:12.5px;color:var(--ink-3);margin-bottom:6px}
+.pips{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.box{width:20px;height:20px;background:var(--sunk);border:1px solid var(--rule);border-radius:2px;
+  cursor:pointer;padding:0;transition:all .12s}
+.box[data-on="1"]{background:var(--accent);border-color:var(--accent)}
+.box.dsf[data-on="1"]{background:var(--hurt);border-color:var(--hurt)}
+.box.dss[data-on="1"]{background:var(--mend);border-color:var(--mend)}
+.counter{display:flex;align-items:center;gap:8px}
+.counter .num{font-family:var(--disp);font-size:28px;min-width:2.2ch;text-align:center}
+.counter .of{font-size:12px;color:var(--ink-3)}
+.counter .of input{width:3.2ch;background:none;border:0;border-bottom:1px dotted var(--bronze-dim);
+  font:inherit;color:var(--ink-2);text-align:center}
+.conds{display:flex;flex-wrap:wrap;gap:5px}
+.cond{font-size:12px;padding:3px 9px;border:1px solid var(--rule);border-radius:99px;
+  background:none;cursor:pointer;color:var(--ink-3);transition:all .12s}
+.cond:hover{border-color:var(--ink-3);color:var(--ink-2)}
+.cond[data-on="1"]{background:var(--hurt);border-color:var(--hurt);color:#fff}
+.exh{display:flex;gap:4px}
+.exh .box[data-on="1"]{background:var(--hurt);border-color:var(--hurt)}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;font-size:11.5px;color:var(--ink-3);
+  padding:0 10px 7px 0;border-bottom:1px solid var(--rule-soft);letter-spacing:.03em}
+td{padding:8px 10px 8px 0;border-bottom:1px solid var(--rule-soft);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--disp);font-size:17px}
+.eq{font-size:10.5px;color:var(--accent);border:1px solid var(--accent);border-radius:2px;
+  padding:0 4px;margin-left:6px;vertical-align:1px}
+.eq.at{color:var(--bronze);border-color:var(--bronze)}
+.qty{color:var(--ink-3);font-size:12px}
+input.dmg{width:92px;background:var(--sunk);border:1px solid var(--rule);border-radius:2px;
+  padding:5px 7px;font-size:13px}
+input.dmg::placeholder{color:var(--ink-3);opacity:.6}
+select.ab-sel{background:var(--sunk);border:1px solid var(--rule);border-radius:2px;
+  padding:5px 6px;font-size:12.5px}
+
+/* ---------- chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:4px 10px;border:1px solid var(--rule);border-radius:2px;
+  background:var(--sunk);color:var(--ink-2)}
+.chip.on{border-color:var(--accent);color:var(--ink)}
+.filter{width:100%;max-width:280px;background:var(--sunk);border:1px solid var(--rule);
+  border-radius:2px;padding:7px 10px;margin-bottom:11px;font-size:13.5px}
+.chip.hide,.frow.hide{display:none}
+
+/* ---------- features / details ---------- */
+.frow{border-bottom:1px solid var(--rule-soft);padding:11px 0}
+.frow:last-child{border-bottom:0}
+.frow h3{font-size:14.5px;font-family:var(--body);font-weight:600;margin-bottom:4px;color:var(--ink)}
+.frow p{margin:0;color:var(--ink-2);font-size:13.5px;white-space:pre-line;max-width:74ch}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px 20px}
+.dl .k{font-size:11.5px;color:var(--ink-3);margin-bottom:2px}
+.dl .v{font-size:13.5px;color:var(--ink);white-space:pre-line}
+.dl .v.empty{color:var(--ink-3);font-style:italic}
+textarea.notes{width:100%;min-height:130px;background:var(--sunk);border:1px solid var(--rule);
+  border-radius:2px;padding:11px;resize:vertical;font-size:13.5px;line-height:1.55}
+
+/* ---------- footer ---------- */
+.foot{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:22px;
+  padding-top:16px;border-top:1px solid var(--rule-soft)}
+.foot .meta{margin-left:auto;font-size:11.5px;color:var(--ink-3);text-align:right;line-height:1.7}
+.note{font-size:12px;color:var(--ink-3);margin:0 0 11px;max-width:74ch}
+.note b{color:var(--bronze);font-weight:600}
+.derived{border-bottom:1px dotted var(--bronze-dim);cursor:help}
+
+/* ---------- dice log ---------- */
+.log{position:fixed;right:16px;bottom:16px;width:270px;background:var(--panel);
+  border:1px solid var(--rule);border-radius:var(--r);z-index:50;
+  box-shadow:0 10px 34px rgba(0,0,0,.55)}
+.log h2{display:flex;align-items:center;gap:8px;font-size:13px;padding:9px 11px;
+  border-bottom:1px solid var(--rule-soft);cursor:pointer;font-family:var(--body);font-weight:600}
+.log h2 .dot{width:7px;height:7px;background:var(--accent);flex:none}
+.log h2 .x{margin-left:auto;color:var(--ink-3);font-weight:400}
+.log .out{padding:11px}
+.log[data-open="0"] .out{display:none}
+.big{text-align:center;padding:4px 0 9px;border-bottom:1px solid var(--rule-soft);margin-bottom:8px}
+.big .n{font-family:var(--disp);font-size:52px;line-height:1;transition:color .2s}
+.big .n.crit{color:var(--mend)} .big .n.fum{color:var(--hurt)}
+.big .d{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.hist{max-height:172px;overflow:auto;font-size:12px;color:var(--ink-3)}
+.hist div{padding:3px 0;border-bottom:1px dashed var(--rule-soft);display:flex;gap:7px}
+.hist div:last-child{border-bottom:0}
+.hist b{color:var(--ink-2);font-weight:500;flex:1}
+.hist s{color:var(--ink);text-decoration:none;font-family:var(--disp);font-size:14px}
+.adv{display:flex;gap:0;margin-bottom:9px;border:1px solid var(--rule);border-radius:2px;
+  overflow:hidden}
+.adv button{flex:1;background:none;border:0;padding:5px 0;font-size:11.5px;cursor:pointer;
+  color:var(--ink-3)}
+.adv button[aria-pressed="true"]{background:var(--accent);color:#11171d;font-weight:600}
+@media(max-width:640px){.log{left:12px;right:12px;width:auto;bottom:12px}}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+@media print{
+  body{background:#fff;color:#000}
+  .log,.hpctl,.foot .btn,.filter{display:none!important}
+  .panel,.vitals,.hp{border-color:#bbb;background:#fff;break-inside:avoid}
+  .panel[data-open="0"]>.body{display:block!important}
+  .vital,.ab,.saverow,.hp,.chip{background:#fff}
+  h1,.vital .v,.hp .cur{color:#000}
+  .wrap{padding:0;max-width:none}
+}
+</style>
+</head>
+<body data-pb="2">
+<div class="wrap">
+<header class="hero"><img class="portrait" src="https://i.imgur.com/uCUTSJw.jpeg" alt="Aela Carina" onerror="this.outerHTML=&quot;<div class='portrait ph' aria-hidden='true'>A</div>&quot;"><div><h1>Aela Carina</h1><div class="billing"><b>Sentinel 4</b> <i>Path of Synthesis</i> <span style="color:var(--ink-3)">·</span> level 4</div><div class="subbilling"><span>Human</span><span>Jedi background · Formfighting Dabbler</span><span>Neutral Light</span><span>Born on Corellia</span><span>2,700 XP</span></div></div></header>
+<div class="vitals">
+<div class="vital"><div class="k">Armour class</div>
+  <input class="edit" id="acVal" type="number" value="16" aria-label="Armour class">
+  <div class="n derived" title="Combat Suit 11 + Dex +4 + Light Physical Shield 1">Combat Suit 11 + Dex +4 + Light Physical Shield 1</div></div>
+<div class="vital"><div class="k">Initiative</div><div class="v">+4</div>
+  <div class="n">Dexterity</div></div>
+<div class="vital"><div class="k">Speed</div>
+  <input class="edit" id="spdVal" type="number" value="30" aria-label="Speed">
+  <div class="n">feet per turn</div></div>
+<div class="vital"><div class="k">Proficiency</div><div class="v">+2</div>
+  <div class="n">level 4</div></div>
+<div class="vital"><div class="k">Passive perception</div><div class="v" id="passive">16</div>
+  <div class="n">10 + Perception</div></div>
+<div class="vital"><div class="k">Hit dice</div><div class="v">4d8</div>
+  <div class="n">Sentinel</div></div>
+</div>
+<div class="hp">
+<div>
+  <div class="read"><span class="cur" id="hpCur">26</span>
+    <span class="max">/ <input id="hpMax" type="number" value="26" aria-label="Maximum hit points"></span>
+    <span class="tmp" id="hpTemp"></span></div>
+  <div class="track" id="hpBar" data-lost="0"><i id="barMain"></i><i class="t" id="barTemp"></i></div>
+  <div class="n derived" style="font-size:11px;color:var(--ink-3);margin-top:6px"
+       title="Sentinel 1: 8 (max d8) +0 · Sentinel 2: 5 rolled +0 · Sentinel 3: 5 rolled +0 · Sentinel 4: 8 rolled +0">Sentinel 1: 8 (max d8) +0 · Sentinel 2: 5 rolled +0 · Sentinel 3: 5 rolled +0 · Sentinel 4: 8 rolled +0</div>
+</div>
+<div class="hpctl">
+  <input id="hpAmt" type="number" min="0" placeholder="0" aria-label="Amount">
+  <button class="btn hurt" id="doHurt">Take damage</button>
+  <button class="btn mend" id="doMend">Heal</button>
+  <button class="btn" id="doTemp">Set temporary</button>
+  <span class="sep"></span>
+  <button class="btn" id="shortRest">Short rest</button>
+  <button class="btn" id="longRest">Long rest</button>
+</div></div>
+<div class="cols">
+<div><section class="panel" data-open="1"><h2>Abilities</h2><div class="body" style="padding:0"><div class="abil"><div class="ab">
+  <div class="score derived" title="6 base">6</div>
+  <div class="nm">Strength<em>6 base</em></div>
+  <div class="m">-2</div></div>
+<div class="saverow"><button class="pip" data-p="" data-key="Strength" title="Not proficient" aria-label="Strength proficiency"></button><span class="lbl">Saving throw</span>
+  <button class="roll" data-mod="-2" data-base="-2" data-extra="0" data-label="Strength save">-2</button></div><div class="ab">
+  <div class="score derived" title="16 base + 2 species">18</div>
+  <div class="nm">Dexterity<em>16 base + 2 species</em></div>
+  <div class="m">+4</div></div>
+<div class="saverow"><button class="pip" data-p="Proficient" data-key="Dexterity" title="Proficient" aria-label="Dexterity proficiency"></button><span class="lbl">Saving throw</span>
+  <button class="roll" data-mod="6" data-base="4" data-extra="0" data-label="Dexterity save">+6</button></div><div class="ab">
+  <div class="score derived" title="9 base + 1 species">10</div>
+  <div class="nm">Constitution<em>9 base + 1 species</em></div>
+  <div class="m">+0</div></div>
+<div class="saverow"><button class="pip" data-p="" data-key="Constitution" title="Not proficient" aria-label="Constitution proficiency"></button><span class="lbl">Saving throw</span>
+  <button class="roll" data-mod="0" data-base="0" data-extra="0" data-label="Constitution save">+0</button></div><div class="ab">
+  <div class="score derived" title="11 base + 1 manual">12</div>
+  <div class="nm">Intelligence<em>11 base + 1 manual</em></div>
+  <div class="m">+1</div></div>
+<div class="saverow"><button class="pip" data-p="" data-key="Intelligence" title="Not proficient" aria-label="Intelligence proficiency"></button><span class="lbl">Saving throw</span>
+  <button class="roll" data-mod="1" data-base="1" data-extra="0" data-label="Intelligence save">+1</button></div><div class="ab">
+  <div class="score derived" title="15 base + 1 species + 2 level-up">18</div>
+  <div class="nm">Wisdom<em>15 base + 1 species + 2 level-up</em></div>
+  <div class="m">+4</div></div>
+<div class="saverow"><button class="pip" data-p="" data-key="Wisdom" title="Not proficient" aria-label="Wisdom proficiency"></button><span class="lbl">Saving throw</span>
+  <button class="roll" data-mod="4" data-base="4" data-extra="0" data-label="Wisdom save">+4</button></div><div class="ab">
+  <div class="score derived" title="10 base">10</div>
+  <div class="nm">Charisma<em>10 base</em></div>
+  <div class="m">+0</div></div>
+<div class="saverow"><button class="pip" data-p="Proficient" data-key="Charisma" title="Proficient" aria-label="Charisma proficiency"></button><span class="lbl">Saving throw</span>
+  <button class="roll" data-mod="2" data-base="0" data-extra="0" data-label="Charisma save">+2</button></div></div></div></section></div>
+<div><section class="panel" data-open="1"><h2>Skills<span class="count">7 proficient</span></h2><div class="body"><p class="note">Filled circle is proficient, ringed circle is expertise. Click a circle to change it — the modifier follows.</p><div class="skills"><div class="skgroup"><h3>Strength (-2)</h3><div class="sk"><button class="pip" data-p="" data-key="Athletics" title="Not proficient" aria-label="Athletics proficiency"></button><span class="lbl">Athletics</span><button class="roll" data-mod="-2" data-base="-2" data-extra="0" data-label="Athletics">-2</button></div></div><div class="skgroup"><h3>Dexterity (+4)</h3><div class="sk"><button class="pip" data-p="" data-key="Acrobatics" title="Not proficient" aria-label="Acrobatics proficiency"></button><span class="lbl">Acrobatics</span><button class="roll" data-mod="4" data-base="4" data-extra="0" data-label="Acrobatics">+4</button></div><div class="sk"><button class="pip" data-p="" data-key="Sleight of Hand" title="Not proficient" aria-label="Sleight of Hand proficiency"></button><span class="lbl">Sleight of Hand</span><button class="roll" data-mod="4" data-base="4" data-extra="0" data-label="Sleight of Hand">+4</button></div><div class="sk"><button class="pip" data-p="Proficient" data-key="Stealth" title="Proficient" aria-label="Stealth proficiency"></button><span class="lbl">Stealth</span><button class="roll" data-mod="6" data-base="4" data-extra="0" data-label="Stealth">+6</button></div></div><div class="skgroup"><h3>Intelligence (+1)</h3><div class="sk"><button class="pip" data-p="Proficient" data-key="Investigation" title="Proficient" aria-label="Investigation proficiency"></button><span class="lbl">Investigation</span><button class="roll" data-mod="3" data-base="1" data-extra="0" data-label="Investigation">+3</button></div><div class="sk"><button class="pip" data-p="" data-key="Lore" title="Not proficient" aria-label="Lore proficiency"></button><span class="lbl">Lore</span><button class="roll" data-mod="1" data-base="1" data-extra="0" data-label="Lore">+1</button></div><div class="sk"><button class="pip" data-p="" data-key="Nature" title="Not proficient" aria-label="Nature proficiency"></button><span class="lbl">Nature</span><button class="roll" data-mod="1" data-base="1" data-extra="0" data-label="Nature">+1</button></div><div class="sk"><button class="pip" data-p="Proficient" data-key="Piloting" title="Proficient" aria-label="Piloting proficiency"></button><span class="lbl">Piloting <span class="bonus">+2</span></span><button class="roll" data-mod="5" data-base="1" data-extra="2" data-label="Piloting">+5</button></div><div class="sk"><button class="pip" data-p="Proficient" data-key="Technology" title="Proficient" aria-label="Technology proficiency"></button><span class="lbl">Technology <span class="bonus">+3</span></span><button class="roll" data-mod="6" data-base="1" data-extra="3" data-label="Technology">+6</button></div></div><div class="skgroup"><h3>Wisdom (+4)</h3><div class="sk"><button class="pip" data-p="" data-key="Animal Handling" title="Not proficient" aria-label="Animal Handling proficiency"></button><span class="lbl">Animal Handling</span><button class="roll" data-mod="4" data-base="4" data-extra="0" data-label="Animal Handling">+4</button></div><div class="sk"><button class="pip" data-p="Proficient" data-key="Insight" title="Proficient" aria-label="Insight proficiency"></button><span class="lbl">Insight</span><button class="roll" data-mod="6" data-base="4" data-extra="0" data-label="Insight">+6</button></div><div class="sk"><button class="pip" data-p="" data-key="Medicine" title="Not proficient" aria-label="Medicine proficiency"></button><span class="lbl">Medicine</span><button class="roll" data-mod="4" data-base="4" data-extra="0" data-label="Medicine">+4</button></div><div class="sk"><button class="pip" data-p="Proficient" data-key="Perception" title="Proficient" aria-label="Perception proficiency"></button><span class="lbl">Perception</span><button class="roll" data-mod="6" data-base="4" data-extra="0" data-label="Perception" data-passive=1>+6</button></div><div class="sk"><button class="pip" data-p="" data-key="Survival" title="Not proficient" aria-label="Survival proficiency"></button><span class="lbl">Survival</span><button class="roll" data-mod="4" data-base="4" data-extra="0" data-label="Survival">+4</button></div></div><div class="skgroup"><h3>Charisma (+0)</h3><div class="sk"><button class="pip" data-p="" data-key="Deception" title="Not proficient" aria-label="Deception proficiency"></button><span class="lbl">Deception</span><button class="roll" data-mod="0" data-base="0" data-extra="0" data-label="Deception">+0</button></div><div class="sk"><button class="pip" data-p="" data-key="Intimidation" title="Not proficient" aria-label="Intimidation proficiency"></button><span class="lbl">Intimidation</span><button class="roll" data-mod="0" data-base="0" data-extra="0" data-label="Intimidation">+0</button></div><div class="sk"><button class="pip" data-p="" data-key="Performance" title="Not proficient" aria-label="Performance proficiency"></button><span class="lbl">Performance</span><button class="roll" data-mod="0" data-base="0" data-extra="0" data-label="Performance">+0</button></div><div class="sk"><button class="pip" data-p="Proficient" data-key="Persuasion" title="Proficient" aria-label="Persuasion proficiency"></button><span class="lbl">Persuasion</span><button class="roll" data-mod="2" data-base="0" data-extra="0" data-label="Persuasion">+2</button></div></div></div></div></section><section class="panel" data-open="1"><h2>Condition and resources</h2><div class="body"><div class="res"><div class="block"><div class="t">Hit dice spent</div><div class="pips" id="hitDice"><button class="box" data-on="0" aria-label="Hit die 1"></button><button class="box" data-on="0" aria-label="Hit die 2"></button><button class="box" data-on="0" aria-label="Hit die 3"></button><button class="box" data-on="0" aria-label="Hit die 4"></button><span class="of" style="margin-left:6px;color:var(--ink-3)">d8</span></div></div><div class="block"><div class="t">Death saves</div><div class="pips"><button class="box dss dsbox" data-on="0" aria-label="Death save success 1"></button><button class="box dss dsbox" data-on="0" aria-label="Death save success 2"></button><button class="box dss dsbox" data-on="0" aria-label="Death save success 3"></button><span style="width:10px"></span><button class="box dsf dsbox" data-on="0" aria-label="Death save failure 1"></button><button class="box dsf dsbox" data-on="0" aria-label="Death save failure 2"></button><button class="box dsf dsbox" data-on="0" aria-label="Death save failure 3"></button></div><div class="t" style="margin:5px 0 0">Saved · failed</div></div><div class="block"><div class="t">Force points spent</div><div class="counter"><button class="btn sm" data-step="-1" aria-label="Less">−</button><span class="num" id="forceUsed">7</span><button class="btn sm" data-step="1" aria-label="More">+</button><span class="of">of <input id="forceMax" type="number" placeholder="?" aria-label="Force points maximum"></span></div><div class="t" style="margin-top:4px">Pool size is not in the export — set it once</div></div><div class="block"><div class="t">Tech points spent</div><div class="counter"><button class="btn sm" data-step="-1" aria-label="Less">−</button><span class="num" id="techUsed">0</span><button class="btn sm" data-step="1" aria-label="More">+</button><span class="of">of <input id="techMax" type="number" placeholder="?" aria-label="Tech points maximum"></span></div><div class="t" style="margin-top:4px">Pool size is not in the export — set it once</div></div><div class="block"><div class="t">Exhaustion</div><div class="pips exh" data-lvl="0"><button class="box" data-on="0" aria-label="Exhaustion 1"></button><button class="box" data-on="0" aria-label="Exhaustion 2"></button><button class="box" data-on="0" aria-label="Exhaustion 3"></button><button class="box" data-on="0" aria-label="Exhaustion 4"></button><button class="box" data-on="0" aria-label="Exhaustion 5"></button><button class="box" data-on="0" aria-label="Exhaustion 6"></button></div></div><div class="block"><div class="t">Inspiration</div><div class="pips"><button class="box" data-on="0" aria-label="Inspiration"></button></div></div><div class="block" style="grid-column:1/-1"><div class="t">Conditions</div><div class="conds"><button class="cond" data-on="0">Blinded</button><button class="cond" data-on="0">Charmed</button><button class="cond" data-on="0">Deafened</button><button class="cond" data-on="0">Frightened</button><button class="cond" data-on="0">Grappled</button><button class="cond" data-on="0">Incapacitated</button><button class="cond" data-on="0">Invisible</button><button class="cond" data-on="0">Paralyzed</button><button class="cond" data-on="0">Petrified</button><button class="cond" data-on="0">Poisoned</button><button class="cond" data-on="0">Prone</button><button class="cond" data-on="0">Restrained</button><button class="cond" data-on="0">Shocked</button><button class="cond" data-on="0">Slowed</button><button class="cond" data-on="0">Stunned</button><button class="cond" data-on="0">Unconscious</button></div></div></div></div></section><section class="panel" data-open="1"><h2>Attacks</h2><div class="body"><p class="note">Damage dice are <b>not stored in the export</b> — type them in once and they travel with the state file. The flat modifier beside each field is added for you.</p><table><thead><tr><th>Weapon</th><th>Prof.</th><th>Ability</th><th>To hit</th><th>Damage</th></tr></thead><tbody><tr data-atk="Martial lightsaber" data-prof="1" data-hitb="2" data-dmgb="2">
+<td>Martial lightsaber <span class="bonus" style="color:var(--bronze);font-size:10.5px">enhanced +2/+2</span></td>
+<td><button class="pip apip" data-p="Proficient" data-key="Martial lightsaber" title="Proficient" aria-label="Martial lightsaber proficiency"></button></td>
+<td><select class="ab-sel" aria-label="Martial lightsaber ability"><option value="Strength" data-mod="-2">Str -2</option><option value="Dexterity" data-mod="4" selected>Dex +4</option></select></td>
+<td class="num"><button class="roll" data-mod="0" data-base="0" data-label="Martial lightsaber attack">+0</button></td>
+<td><input class="dmg" type="text" value="" placeholder="1d8" aria-label="Martial lightsaber damage dice">
+ <button class="btn sm dmgbtn" title="Roll damage">+0</button></td></tr><tr data-atk="Ion pistol" data-prof="1" data-hitb="0" data-dmgb="0">
+<td>Ion pistol</td>
+<td><button class="pip apip" data-p="Proficient" data-key="Ion pistol" title="Proficient" aria-label="Ion pistol proficiency"></button></td>
+<td><select class="ab-sel" aria-label="Ion pistol ability"><option value="Strength" data-mod="-2">Str -2</option><option value="Dexterity" data-mod="4" selected>Dex +4</option></select></td>
+<td class="num"><button class="roll" data-mod="0" data-base="0" data-label="Ion pistol attack">+0</button></td>
+<td><input class="dmg" type="text" value="" placeholder="1d8" aria-label="Ion pistol damage dice">
+ <button class="btn sm dmgbtn" title="Roll damage">+0</button></td></tr></tbody></table></div></section><section class="panel" data-open="1"><h2>Force powers<span class="count">13 known</span></h2><div class="body"><input class="filter" type="search" placeholder="Filter force powers…" aria-label="Filter Force powers"><div class="chips"><span class="chip on">Wall Run</span><span class="chip on">Force Disarm</span><span class="chip on">Force Push/Pull</span><span class="chip on">Force Whisper</span><span class="chip on">Mind Trick</span><span class="chip on">Spare the Dying</span><span class="chip on">Comprehend Speech</span><span class="chip on">Force Intuition</span><span class="chip on">Force Mask</span><span class="chip on">Stun</span><span class="chip on">Phasewalk</span><span class="chip on">Stun Droid</span><span class="chip on">Locate Object</span></div></div></section><section class="panel" data-open="1"><h2>Tech powers<span class="count">2 known</span></h2><div class="body"><div class="chips"><span class="chip on">Bacta Pack</span><span class="chip on">Ward</span></div></div></section><section class="panel" data-open="1"><h2>Equipment<span class="count">15 entries</span></h2><div class="body"><p class="note">Credits on hand: <b>0</b></p><table><tbody><tr><td>Martial lightsaber<span class="eq">equipped</span></td><td style="text-align:right"></td></tr><tr><td>Backpack</td><td style="text-align:right"></td></tr><tr><td>Glowrod</td><td style="text-align:right"><span class="qty">×4</span></td></tr><tr><td>Fusion cutter</td><td style="text-align:right"></td></tr><tr><td>Grappling hook</td><td style="text-align:right"></td></tr><tr><td>Chronometer</td><td style="text-align:right"></td></tr><tr><td>Mechanic&#x27;s kit</td><td style="text-align:right"></td></tr><tr><td>Combat suit<span class="eq">equipped</span></td><td style="text-align:right"></td></tr><tr><td>Astrotech&#x27;s implements</td><td style="text-align:right"></td></tr><tr><td>Artificer&#x27;s implements</td><td style="text-align:right"></td></tr><tr><td>Clothes, common</td><td style="text-align:right"></td></tr><tr><td>Light physical shield<span class="eq">equipped</span></td><td style="text-align:right"></td></tr><tr><td>Blaster pistol</td><td style="text-align:right"></td></tr><tr><td>Ion pistol<span class="eq">equipped</span></td><td style="text-align:right"></td></tr><tr><td>Jedi Padawan&#x27;s Robe<span class="eq at">attuned</span></td><td style="text-align:right"></td></tr></tbody></table></div></section><section class="panel" data-open="1"><h2>Features and feats<span class="count">3</span></h2><div class="body"><div class="frow"><h3>Formfighting Dabbler</h3><p>Feat from the Jedi background.</p></div><div class="frow"><h3>Luminous Beings</h3><p>This character has a special connection to mechanical creatures and devices through the Force. Gain advantage on technology checks. Additionally, once per day, this character may use the Influence Mind power on a droid as if it were an organic creature.</p></div><div class="frow"><h3>Path of Synthesis</h3><p>Sentinel archetype, chosen at level 3.</p></div></div></section><section class="panel" data-open="1"><h2>Proficiencies and languages</h2><div class="body"><div style="display:grid;gap:14px"><div><div class="k" style="font-size:11.5px;color:var(--ink-3);margin-bottom:5px">Tool proficiencies</div><div class="chips"><span class="chip">Astrotech&#x27;s implements</span><span class="chip">Mechanic&#x27;s kit</span></div></div><div><div class="k" style="font-size:11.5px;color:var(--ink-3);margin-bottom:5px">Weapon proficiencies</div><div class="chips"><span class="chip">Martial lightsaber</span><span class="chip">Simple Blasters</span></div></div><div><div class="k" style="font-size:11.5px;color:var(--ink-3);margin-bottom:5px">Languages</div><div class="chips"><span class="chip">Galactic Basic</span><span class="chip">Huttese</span><span class="chip">Twi&#x27;leki</span></div></div></div></div></section><section class="panel" data-open="0"><h2>Character details</h2><div class="body"><div class="dl"><div><div class="k">Personality Traits</div><div class="v">I&#x27;ve enjoyed fine food, drink, and high society. Rough living grates on me.</div></div><div><div class="k">Ideal</div><div class="v empty">not recorded</div></div><div><div class="k">Bond</div><div class="v empty">not recorded</div></div><div><div class="k">Flaw</div><div class="v empty">not recorded</div></div><div><div class="k">Gender</div><div class="v">Female</div></div><div><div class="k">Age</div><div class="v">21</div></div><div><div class="k">Height</div><div class="v empty">not recorded</div></div><div><div class="k">Weight</div><div class="v empty">not recorded</div></div><div><div class="k">Hair</div><div class="v empty">not recorded</div></div><div><div class="k">Eyes</div><div class="v empty">not recorded</div></div><div><div class="k">Skin</div><div class="v empty">not recorded</div></div><div><div class="k">Place of Birth</div><div class="v">Corellia</div></div><div><div class="k">Appearance</div><div class="v empty">not recorded</div></div><div><div class="k">Backstory</div><div class="v empty">not recorded</div></div></div></div></section><section class="panel" data-open="1"><h2>Notes</h2><div class="body"><textarea class="notes" id="notes" placeholder="Session notes, contacts, debts, things you told someone you would do…"></textarea></div></section></div>
+</div>
+<div class="foot">
+<button class="btn" id="export">Download updated state</button>
+<button class="btn" id="print">Print sheet</button>
+<div class="meta">Built from Aela Carina export · builder 0.7.6<br>
+Created 28 May 2023 · last changed 20 Oct 2024</div></div>
+</div>
+<aside class="log" id="log" data-open="1">
+<h2><span class="dot"></span>Dice<span class="x">hide</span></h2>
+<div class="out">
+  <div class="adv">
+    <button data-mode="normal" aria-pressed="true">Straight</button>
+    <button data-mode="adv" aria-pressed="false">Advantage</button>
+    <button data-mode="dis" aria-pressed="false">Disadvantage</button>
+  </div>
+  <div class="big"><div class="n" id="bigN">—</div><div class="d" id="bigD">Click any modifier to roll</div></div>
+  <div class="hist" id="hist"></div>
+</div></aside>
+<script type="application/json" id="srcjson">{"name": "Aela Carina", "id": "32199837-5929-4a1e-8185-e299407e7dfa", "userId": "36ad8dbb-d407-43bc-bcf4-4e8b084aabd3", "builderVersion": "0.7.6", "image": "https://i.imgur.com/uCUTSJw.jpeg", "user": "", "experiencePoints": 2700, "species": {"name": "Human", "abilityScoreImprovementSelectedOption": 0, "abilityScoreImprovement": {"Dexterity": 2, "Wisdom": 1, "Constitution": 1}}, "classes": [{"name": "Sentinel", "levels": 4, "hitPoints": [5, 5, 8], "abilityScoreImprovements": [{"type": "Ability Score Improvement", "abilitiesIncreased": [{"name": "Wisdom", "value": 2}]}], "archetype": {"name": "Path of Synthesis"}, "forcePowers": ["Wall Run", "Force Disarm", "Force Push/Pull", "Force Whisper", "Mind Trick", "Spare the Dying", "Comprehend Speech", "Force Intuition", "Force Mask", "Stun", "Phasewalk", "Stun Droid", "Locate Object"]}], "baseAbilityScores": {"Strength": 6, "Dexterity": 16, "Constitution": 9, "Intelligence": 11, "Wisdom": 15, "Charisma": 10}, "background": {"name": "Jedi", "feat": {"name": "Formfighting Dabbler", "type": "Feat"}, "feature": ""}, "characteristics": {"alignment": "Neutral Light", "Personality Traits": "I've enjoyed fine food, drink, and high society. Rough living grates on me.", "Ideal": "", "Bond": "", "Flaw": "", "Gender": "Female", "Place of Birth": "Corellia", "Age": "21", "Height": "", "Weight": "", "Hair": "", "Eyes": "", "Skin": "", "Appearance": "", "Backstory": ""}, "credits": 0, "equipment": [{"name": "Martial lightsaber", "quantity": 1, "category": "Equipment", "equipped": true, "tweaks": {"toHit": {"override": null, "bonus": 2}, "damage": {"override": null, "bonus": 2}}}, {"name": "Backpack", "quantity": 1, "category": "Equipment"}, {"name": "Glowrod", "quantity": 4, "category": "Equipment"}, {"name": "Fusion cutter", "quantity": 1, "category": "Equipment"}, {"name": "Grappling hook", "quantity": 1, "category": "Equipment"}, {"name": "Chronometer", "quantity": 1, "category": "Equipment"}, {"name": "Mechanic's kit", "quantity": 1, "category": "Equipment"}, {"name": "Combat suit", "quantity": 1, "category": "Equipment", "equipped": true}, {"name": "Astrotech's implements", "quantity": 1, "category": "Equipment"}, {"name": "Artificer's implements", "quantity": 1, "category": "Equipment"}, {"name": "Clothes, common", "quantity": 1, "category": "Equipment"}, {"name": "Light physical shield", "quantity": 1, "category": "Equipment", "equipped": true}, {"name": "Blaster pistol", "quantity": 1, "category": "Equipment", "equipped": false}, {"name": "Ion pistol", "quantity": 1, "category": "Equipment", "equipped": true}, {"name": "Jedi Padawan's Robe", "quantity": 1, "category": "EnhancedItem", "attuned": true}], "currentStats": {"hitPointsLost": 0, "temporaryHitPoints": 0, "techPointsUsed": 0, "forcePointsUsed": 7, "superiorityDiceUsed": 0, "hitDiceUsed": {}, "deathSaves": {"successes": 0, "failures": 0}, "hasInspiration": false, "featuresTimesUsed": {}, "conditions": [], "exhaustion": 0, "highLevelCasting": {"level6": false, "level7": false, "level8": false, "level9": false}, "exhausion": 0}, "tweaks": {"abilityScores": {"Intelligence": {"score": {"bonus": 1, "override": null}, "skills": {"Piloting": {"proficiency": "Proficient", "bonus": 2, "override": null}, "Investigation": {"proficiency": "Proficient"}, "Technology": {"proficiency": "Proficient", "bonus": 3, "override": null}}}, "Wisdom": {"skills": {"Perception": {"proficiency": "Proficient"}, "Insight": {"proficiency": "Proficient"}}}, "Dexterity": {"skills": {"Stealth": {"proficiency": "Proficient"}}, "savingThrowModifier": {"proficiency": "Proficient"}}, "Charisma": {"skills": {"Persuasion": {"proficiency": "Proficient"}}, "savingThrowModifier": {"proficiency": "Proficient"}}, "Strength": {"score": {"bonus": null, "override": null}}}}, "customProficiencies": [{"name": "Astrotech's implements", "type": "tool", "proficiencyLevel": "proficient"}, {"name": "Mechanic's kit", "type": "tool", "proficiencyLevel": "proficient"}, {"name": "Martial lightsaber", "type": "weapon", "proficiencyLevel": "proficient"}, {"name": "Simple Blasters", "type": "weapon", "proficiencyLevel": "proficient"}], "customLanguages": ["Huttese", "Twi'leki"], "customFeatures": [{"name": "Aela Carina: Luminous Beings", "content": "This character has a special connection to mechanical creatures and devices through the Force. Gain advantage on technology checks. Additionally, once per day, this character may use the Influence Mind power on a droid as if it were an organic creature."}], "customFeats": [], "customTechPowers": ["Bacta Pack", "Ward"], "customForcePowers": [], "customEquipment": [], "settings": {"isEnforcingForcePrerequisites": true, "isFixedHitPoints": false, "abilityScoreMethod": "Manual"}, "notes": "", "createdAt": 1685281273103, "changedAt": 1729443730715, "localId": "temp-rqwjqyxpt"}</script>
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var PB=Number(document.body.dataset.pb);
+var advMode='normal';
+
+/* ---------------- dice ---------------- */
+function d(n){return 1+Math.floor(Math.random()*n)}
+function flash(el){el.animate?el.animate([{opacity:.25},{opacity:1}],{duration:220}):0}
+
+function show(total,detail,crit){
+  var n=$('#bigN'); n.textContent=total; n.className='n'+(crit===1?' crit':crit===-1?' fum':'');
+  $('#bigD').textContent=detail; flash(n);
+  var h=$('#hist'), row=document.createElement('div');
+  row.innerHTML='<b></b><s></s>';
+  row.children[0].textContent=detail; row.children[1].textContent=total;
+  h.insertBefore(row,h.firstChild);
+  while(h.children.length>28) h.removeChild(h.lastChild);
+  $('#log').dataset.open='1';
+}
+
+function rollCheck(mod,label,mode){
+  var a=d(20),b=d(20),used=a,note='';
+  if(mode==='adv'){used=Math.max(a,b);note=' [adv '+a+'/'+b+']'}
+  else if(mode==='dis'){used=Math.min(a,b);note=' [dis '+a+'/'+b+']'}
+  var t=used+mod, sg=(mod>=0?'+':'')+mod;
+  show(t,label+': d20('+used+') '+sg+note, used===20?1:used===1?-1:0);
+}
+
+/* "2d6+3", "1d8", "3" -> {n,f,flat} */
+function parseDice(s){
+  s=(s||'').replace(/\s/g,'').toLowerCase();
+  var m=s.match(/^(\d*)d(\d+)([+-]\d+)?$/);
+  if(m) return {n:Number(m[1]||1),f:Number(m[2]),flat:Number(m[3]||0)};
+  if(/^[+-]?\d+$/.test(s)) return {n:0,f:0,flat:Number(s)};
+  return null;
+}
+function rollDamage(expr,flat,label){
+  var p=parseDice(expr);
+  if(!p){ show('—','No damage dice set for '+label+' — type them in the field',0); return }
+  var rolls=[],sum=0;
+  for(var i=0;i<p.n;i++){var r=d(p.f);rolls.push(r);sum+=r}
+  var t=sum+p.flat+flat;
+  var det=label+' damage: '+(p.n?p.n+'d'+p.f+'('+rolls.join('+')+')':'')+
+          (p.flat?(p.flat>0?' +':' ')+p.flat:'')+(flat?(flat>0?' +':' ')+flat:'');
+  show(t,det,0);
+}
+
+function modeFor(e){
+  if(e.shiftKey) return 'adv';
+  if(e.altKey||e.metaKey) return 'dis';
+  return advMode==='normal'?'flat':advMode;
+}
+
+document.addEventListener('click',function(e){
+  var r=e.target.closest('.roll'); if(!r) return;
+  var m=modeFor(e);
+  rollCheck(Number(r.dataset.mod),r.dataset.label,m==='flat'?'normal':m);
+});
+
+$$('.adv button').forEach(function(b){
+  b.addEventListener('click',function(){
+    advMode=b.dataset.mode;
+    $$('.adv button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+  });
+});
+$('#log').querySelector('h2').addEventListener('click',function(){
+  var l=$('#log'); l.dataset.open=l.dataset.open==='1'?'0':'1';
+});
+
+/* ---------------- proficiency toggles ---------------- */
+var CYCLE=['','Proficient','Expertise'];
+function recalc(pip){
+  var row=pip.closest('.sk,.saverow'), chip=row.querySelector('.roll');
+  var base=Number(chip.dataset.base), extra=Number(chip.dataset.extra||0);
+  var p=pip.dataset.p, mult=p==='Expertise'?2:p==='Proficient'?1:0;
+  var v=base+extra+mult*PB;
+  chip.dataset.mod=v; chip.textContent=(v>=0?'+':'')+v;
+  if(chip.dataset.passive){
+    var pv=$('#passive'); if(pv) pv.textContent=10+v;
+  }
+}
+$$('.sk .pip, .saverow .pip').forEach(function(pip){
+  pip.addEventListener('click',function(){
+    var i=CYCLE.indexOf(pip.dataset.p||'');
+    pip.dataset.p=CYCLE[(i+1)%3];
+    pip.title=pip.dataset.p||'Not proficient';
+    recalc(pip);
+  });
+});
+
+/* ---------------- hit points ---------------- */
+var HP={max:Number($('#hpMax').value)||1,lost:Number($('#hpBar').dataset.lost)||0,temp:Number($('#hpTemp').textContent)||0};
+function paintHP(){
+  if(HP.lost<0)HP.lost=0; if(HP.lost>HP.max)HP.lost=HP.max; if(HP.temp<0)HP.temp=0;
+  var cur=HP.max-HP.lost;
+  $('#hpCur').textContent=cur;
+  $('#hpTemp').textContent=HP.temp?'+'+HP.temp:'';
+  var tot=HP.max+HP.temp;
+  $('#barMain').style.width=(100*cur/tot)+'%';
+  $('#barTemp').style.width=(100*HP.temp/tot)+'%';
+  $('#hpCur').style.color=cur===0?'var(--hurt)':cur<=HP.max/4?'#e0a08c':'';
+}
+function amt(){var v=Number($('#hpAmt').value);return isNaN(v)?0:Math.abs(v)}
+$('#doHurt').addEventListener('click',function(){
+  var n=amt()||1, t=Math.min(HP.temp,n); HP.temp-=t; HP.lost+=(n-t); paintHP();
+});
+$('#doMend').addEventListener('click',function(){HP.lost-=(amt()||1);paintHP()});
+$('#doTemp').addEventListener('click',function(){HP.temp=Math.max(HP.temp,amt());paintHP()});
+$('#hpMax').addEventListener('change',function(){HP.max=Number(this.value)||1;paintHP()});
+
+/* ---------------- counters & boxes ---------------- */
+$$('.counter').forEach(function(c){
+  var num=c.querySelector('.num');
+  c.querySelectorAll('[data-step]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var v=Number(num.textContent)+Number(b.dataset.step);
+      if(v<0)v=0; num.textContent=v;
+    });
+  });
+});
+$$('.box,.cond').forEach(function(b){
+  if(b.closest('.exh')) return;            /* exhaustion is a ladder, handled below */
+  b.addEventListener('click',function(){b.dataset.on=b.dataset.on==='1'?'0':'1'});
+});
+$$('.exh').forEach(function(g){
+  g.querySelectorAll('.box').forEach(function(b,i){
+    b.addEventListener('click',function(){
+      var lvl=Number(g.dataset.lvl||0), nu=(lvl===i+1)?i:i+1;
+      g.dataset.lvl=nu;
+      g.querySelectorAll('.box').forEach(function(x,j){x.dataset.on=j<nu?'1':'0'});
+    });
+  });
+});
+
+/* ---------------- attacks ---------------- */
+$$('tr[data-atk]').forEach(function(tr){
+  var sel=tr.querySelector('.ab-sel'), hit=tr.querySelector('.roll'), dmg=tr.querySelector('.dmg');
+  var apip=tr.querySelector('.apip');
+  function sync(){
+    if(!sel) return;
+    var m=Number(sel.selectedOptions[0].dataset.mod);
+    var v=m+Number(tr.dataset.prof)*PB+Number(tr.dataset.hitb||0);
+    hit.dataset.mod=v; hit.textContent=(v>=0?'+':'')+v;
+    var fl=m+Number(tr.dataset.dmgb||0);
+    tr.dataset.dmgflat=fl;
+    tr.querySelector('.dmgbtn').textContent='Roll '+(fl>=0?'+':'')+fl;
+  }
+  if(sel) sel.addEventListener('change',sync);
+  if(apip) apip.addEventListener('click',function(){
+    apip.dataset.p=apip.dataset.p==='Proficient'?'':'Proficient';
+    apip.title=apip.dataset.p?'Proficient':'Not proficient';
+    tr.dataset.prof=apip.dataset.p?1:0; sync();
+  });
+  sync();
+  tr.querySelector('.dmgbtn').addEventListener('click',function(){
+    rollDamage(dmg.value,Number(tr.dataset.dmgflat||0),tr.dataset.atk);
+  });
+});
+
+/* ---------------- panels & filters ---------------- */
+$$('.panel>h2').forEach(function(h){
+  h.addEventListener('click',function(){
+    var p=h.parentElement; p.dataset.open=p.dataset.open==='0'?'1':'0';
+  });
+});
+$$('.filter').forEach(function(f){
+  f.addEventListener('input',function(){
+    var q=f.value.toLowerCase(), scope=f.parentElement;
+    scope.querySelectorAll('.chip,.frow').forEach(function(el){
+      el.classList.toggle('hide',q && el.textContent.toLowerCase().indexOf(q)<0);
+    });
+  });
+});
+
+/* ---------------- rests ---------------- */
+function setCounter(id,v){var n=$(id);if(n)n.textContent=v}
+$('#shortRest').addEventListener('click',function(){
+  setCounter('#techUsed',0);
+  setCounter('#supUsed',0);
+  show('—','Short rest: tech points and superiority dice restored',0);
+});
+$('#longRest').addEventListener('click',function(){
+  HP.lost=0;HP.temp=0;paintHP();
+  setCounter('#techUsed',0);setCounter('#forceUsed',0);setCounter('#supUsed',0);
+  $$('#hitDice .box').forEach(function(b){b.dataset.on='0'});
+  $$('.dsbox').forEach(function(b){b.dataset.on='0'});
+  var g=$('.exh');
+  if(g){var l=Math.max(0,Number(g.dataset.lvl||0)-1);g.dataset.lvl=l;
+        g.querySelectorAll('.box').forEach(function(x,j){x.dataset.on=j<l?'1':'0'})}
+  show('—','Long rest: hit points, points and hit dice restored',0);
+});
+
+/* ---------------- export ---------------- */
+function collectPips(sel){
+  var o={};
+  $$(sel).forEach(function(p){ if(p.dataset.p) o[p.dataset.key]=p.dataset.p });
+  return o;
+}
+$('#export').addEventListener('click',function(){
+  var src=JSON.parse($('#srcjson').textContent);
+  var g=$('.exh');
+  src.currentStats=src.currentStats||{};
+  src.currentStats.hitPointsLost=HP.lost;
+  src.currentStats.temporaryHitPoints=HP.temp;
+  src.currentStats.forcePointsUsed=Number(($('#forceUsed')||{}).textContent||0);
+  src.currentStats.techPointsUsed=Number(($('#techUsed')||{}).textContent||0);
+  src.currentStats.superiorityDiceUsed=Number(($('#supUsed')||{}).textContent||0);
+  src.currentStats.exhaustion=Number(g?g.dataset.lvl:0)||0;
+  src.currentStats.deathSaves={
+    successes:$$('.dss[data-on="1"]').length,
+    failures:$$('.dsf[data-on="1"]').length
+  };
+  src.currentStats.conditions=$$('.cond[data-on="1"]').map(function(c){return c.textContent.trim()});
+  src.notes=$('#notes').value;
+  src.sheetExtras={
+    maxHitPoints:HP.max,
+    armorClass:Number($('#acVal').value)||null,
+    speed:Number($('#spdVal').value)||null,
+    forcePointsMax:Number(($('#forceMax')||{}).value)||null,
+    techPointsMax:Number(($('#techMax')||{}).value)||null,
+    hitDiceUsed:$$('#hitDice .box[data-on="1"]').length,
+    skillProficiencies:collectPips('.sk .pip'),
+    savingThrowProficiencies:collectPips('.saverow .pip'),
+    weaponDamage:(function(){var o={};$$('tr[data-atk]').forEach(function(t){
+      var v=t.querySelector('.dmg').value; if(v)o[t.dataset.atk]=v});return o})()
+  };
+  var blob=new Blob([JSON.stringify(src,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(src.name||'character').replace(/[^\w]+/g,'-').toLowerCase()+'-state.json';
+  a.click(); URL.revokeObjectURL(a.href);
+});
+$('#print').addEventListener('click',function(){window.print()});
+
+/* boot: one orchestrated fill of the health bar */
+paintHP();
+var w1=$('#barMain').style.width,w2=$('#barTemp').style.width;
+var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!rm){
+  $('#barMain').style.width='0';$('#barTemp').style.width='0';
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    $('#barMain').style.width=w1;$('#barTemp').style.width=w2;
+  })});
+}
+})();
+</script>
+</body></html>
